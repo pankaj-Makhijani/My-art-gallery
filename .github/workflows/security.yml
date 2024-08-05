@@ -1,5 +1,5 @@
-# .github/workflows/ci-cd.yml
-name: CI/CD Pipeline
+# .github/workflows/security.yml
+name: Security
 
 on:
   push:
