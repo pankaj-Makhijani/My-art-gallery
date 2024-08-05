@@ -20,12 +20,12 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'adopt-openjdk'  # Use the appropriate JDK distribution
+        distribution: 'adopt-openjdk'
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20'  # Use the Node.js version appropriate for your project
+        node-version: '20'  # Ensure the latest Node.js version is used
 
     - name: Install Dependencies
       run: npm install
