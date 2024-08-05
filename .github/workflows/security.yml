@@ -27,4 +27,3 @@ jobs:
 
       - name: Start Application
         run: npm start &
-        background: true  # Run the application in the background
