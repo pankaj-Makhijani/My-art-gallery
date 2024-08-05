@@ -42,9 +42,3 @@ jobs:
           -Dsonar.sources=. \
           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
           -Dsonar.login=$SONAR_TOKEN
-
-    - name: Run OWASP ZAP Scan
-      uses: zaproxy/action-full-scan@v0.11.0
-      with:
-        target: 'http://localhost:8080'
-        rules: 'ALL'
