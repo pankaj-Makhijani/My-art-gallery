@@ -1,27 +1,43 @@
-name: Secuity
+# .github/workflows/ci-cd.yml
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
-
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-    name: Build and analyze
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: sonarsource/sonarqube-quality-gate-action@master
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: SonarQube Analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST: ${{ secrets.SONAR_HOST }}
+      run: |
+        npm install -g sonar-scanner
+        sonar-scanner -Dsonar.projectKey=My-art-gallery \
+                       -Dsonar.sources=. \
+                       -Dsonar.host.url=$SONAR_HOST \
+                       -Dsonar.login=$SONAR_TOKEN
+
+    - name: OWASP ZAP Scan
+      uses: zaproxy/action-full-scan@v0.11.0
+      with:
+        target: 'http://localhost:8080'
+        rules: 'ALL'
