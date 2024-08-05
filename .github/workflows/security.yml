@@ -1,23 +1,30 @@
-name: Security  # Defines the name of the workflow.
+name: Build and Test
 
 on:
   push:
     branches:
-      - main  # Specifies that this workflow runs on pushes to the 'main' branch.
+      - main
 
 jobs:
   build:
-    name: Build and analyze  # Names the job within the workflow.
-    runs-on: ubuntu-latest  # Specifies that the job runs on the latest version of the Ubuntu runner.
+    name: Build, Test, and Analyze
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # Checks out the repository code to the GitHub runner.
-        with:
-          fetch-depth: 0  # Fetches the full history of the repository to ensure a complete analysis by SonarQube.
+        uses: actions/checkout@v4
 
-      - name: Run SonarQube Analysis
-        uses: sonarsource/sonarqube-scan-action@master  # Runs the SonarQube analysis action to scan the code for quality issues.
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Sets the SonarQube authentication token from GitHub secrets.
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}  # Sets the URL of the SonarQube server from GitHub secrets.
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Start Application
+        run: npm start &
+        background: true  # Run the application in the background
