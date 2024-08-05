@@ -35,4 +35,4 @@ jobs:
           allow_issue_writing: false
 
       - name: Shutdown Application
-        run: kill $(lsof -t -i:3000)
+        run: kill $(lsof -t -i:4200)
