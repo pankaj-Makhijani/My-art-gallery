@@ -1,0 +1,36 @@
+# .github/workflows/ci-cd.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: SonarQube Analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+      run: |
+        npm install -g sonar-scanner
+        sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                       -Dsonar.sources=. \
+                       -Dsonar.host.url=$SONAR_HOST_URL \
+                       -Dsonar.login=$SONAR_TOKEN \
+                       -Dsonar.exclusions=node_modules/**,dist/**,**/*.scss, **/*.css
