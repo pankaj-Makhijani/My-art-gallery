@@ -1,0 +1,20 @@
+name: security # Define the name of the workflow
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow on push events to the 'main' branch
+
+jobs:
+  build:
+    name: Build # Define the name of the job
+    runs-on: ubuntu-latest # Specify the environment to run the job (Ubuntu latest version)
+    steps:
+      - uses: actions/checkout@v4 # Check out the repository's code at the latest commit
+        with:
+          fetch-depth: 0 # Fetch all history and branches
+
+      - uses: sonarsource/sonarqube-scan-action@master # Use the SonarQube scan action
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Set the SonarQube token from GitHub Secrets for authentication
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Set the SonarQube server URL from GitHub Secrets
